@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        .bunk-box {
+            background-color: #90ee90;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .attend-box {
+            background-color: lightcoral;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Attendance Analysis</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>Subject</th>
+                <th>Attendance Percentage</th>
+                <th>Classes Attended</th>
+                <th>Analysis</th>
+                <th>Classes to Bunk</th>
+                <th>Classes to Attend</th>
+            </tr>
+            {% for i in range(subjects|length) %}
+            <tr>
+                <td>{{ subjects[i] }}</td>
+                <td>{{ attendance[i] }}</td>
+                <td>{{ attended[i] }}</td>
+                <td>{{ analysis[i] }}</td>
+        
+                {% set bunk_classes = analysis[i] | regex_search('bunk (\d+)') %}
+                {% set attend_classes = analysis[i] | regex_search('Attend at least (\d+)') %}
+        
+                <td {% if bunk_classes %} style="background-color: lightgreen; font-weight: bold;" {% endif %}>
+                    {{ bunk_classes if bunk_classes else '-' }}
+                </td>
+                <td {% if attend_classes %} style="background-color: lightcoral; font-weight: bold;" {% endif %}>
+                    {{ attend_classes if attend_classes else '-' }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <a href="/" class="btn btn-secondary">Logout</a>
+    </div>
+</body>
+</html>
