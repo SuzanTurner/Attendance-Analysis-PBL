@@ -20,6 +20,7 @@
 </head>
 <body>
     <div class="container mt-5">
+        <h2 class="text-center"> Welcome {{ name }}!!</h2>
         <h2 class="text-center">Attendance Analysis</h2>
         <table class="table table-bordered">
             <tr>
@@ -49,6 +50,14 @@
             </tr>
             {% endfor %}
         </table>
+
+        <h2 class="text-center">Overall Attendance: {{ overall }}%</h2>
+
+        {% if overall > 75 %}
+            <h3 class = "text-center">You may skip {{ classes }} number of classes and still be above 75%</h3>
+        {% else %}
+            <h3 class = "text-center">You must attend {{ classes }} number of classes to stay above 75%</h3>
+        {% endif %}
         
         <a href="/" class="btn btn-secondary">Logout</a>
     </div>

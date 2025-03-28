@@ -43,8 +43,27 @@ def get_attendance(username, password, threshold=60):
             return None  # Redirect to error page
         
         driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[5]/div/div/div[2]/a/img').click()
-        time.sleep(2)  # Ensure the page loads
-        
+        time.sleep(2)  
+
+
+        name = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/h5').text
+
+        overall = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr[23]/td[3]').text
+        overall = float(overall.replace('%', ''))
+
+        overall_fraction = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr[23]/td[2]').text
+
+        attended_classes, total_classes = map(int, overall_fraction.split('/'))
+
+        required_percentage = 75
+
+        if overall < required_percentage:
+            classes = int(max(0, (0.75 * total_classes - attended_classes) / 0.25) - attended_classes)
+            #print(f"Attend at least {attended_classes - (int(classes) + 1)} more classes to reach 75%")
+        else:
+            classes = max(0, (attended_classes - 0.75 * total_classes) / 0.75)  
+            #print(f"You can skip {int(classes)} classes and still be above 75%")
+
         subjects = []
         attendance = []
         attended = []
@@ -89,28 +108,46 @@ def get_attendance(username, password, threshold=60):
             except:
                 continue
         
-        return subjects, attendance, attended, analysis
+        return subjects, attendance, attended, analysis, overall, classes, name
     except Exception as e:
         driver.quit()
         return None
 
 # Flask Routes
-@app.route('/login', methods=['GET', 'POST'])  # ✅ "/" pe login page render hoga
+@app.route('/', methods=['GET', 'POST'])  
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         data = get_attendance(username, password)
         if data:
-            subjects, attendance, attended, analysis = data  # ✅ attended bhi include kiya
-            return render_template('attendance.html', subjects=subjects, attendance=attendance, attended=attended, analysis=analysis)
+            subjects, attendance, attended, analysis, overall, classes, name = data  
+            return render_template('attendance.html', subjects=subjects, attendance=attendance, attended=attended, analysis=analysis, overall = overall, classes = classes, name = name)
         else:
             return redirect(url_for('error'))
     return render_template('login.html')
+
+
+@app.route('/cgpa', methods=['GET', 'POST'])
+def cgpa():
+    cgpa_value = None
+    pred_cgpa = None
+
+    if request.method == 'POST':
+        if 'submit_cgpa' in request.form:
+            cgpa_value = float(request.form['cgpa'])
+        elif 'submit_sgpa' in request.form:
+            cgpa_value = float(request.form['cgpa'])  # Retrieve from hidden input
+            sgpa = float(request.form['sgpa'])
+            pred_cgpa = (cgpa_value + sgpa) / 2
+
+    return render_template('cgpa.html', cgpa=cgpa_value, pred_cgpa=pred_cgpa)
+
+
 
 @app.route('/error')
 def error():
     return render_template('error.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)  # ✅ Debug mode ON
+    app.run(debug=True)  
