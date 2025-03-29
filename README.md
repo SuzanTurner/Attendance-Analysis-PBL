@@ -46,6 +46,7 @@ Make sure the files are in the following format:
           │── error.html
           │── login.html
           │── cgpa.html
+          │── mail.html
 │── main.py                
 │── requirements.txt        
 │── README.md  
