@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator</title>
+    <link rel = "stylesheet" href = "/static/sgpa.css">
+</head>
+
+</html>
+<body>
+    <div class="container">
+        <h1>CGPA Calculator</h1>
+        <form method="POST" action="/cgpa">
+            <label>Enter your Current CGPA</label>
+            <input type="text" name="cgpa" placeholder="8.0" value="{{ cgpa if cgpa is not none else '' }}" required>
+
+            <label>Enter your Desired CGPA</label>
+            <input type="text" name="desired_cgpa" placeholder="9.0" value="{{ desired_cgpa if desired_cgpa is not none else '' }}" required>
+
+            <button type="submit" name="submit">Calculate</button>
+        </form>
+
+        {% if required_sgpa is not none %}
+            <h1>Required SGPA to achieve CGPA {{ desired_cgpa }}: {{ required_sgpa|round(2) }}</h1>
+        {% endif %}
+    </div>
+</body>

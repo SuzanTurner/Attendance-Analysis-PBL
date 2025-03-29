@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analysis</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
+     <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="left">
+            <a href="http://127.0.0.1:5000/login" class="logo"> 
+                <img src="/static/media/calendar.png" alt="Logo"> 
+                <ul>
+                    <li style="margin-top: 5px ;" class="project-name">Attendance Management System <br>with Class Recommendation</li>
+                </ul>
+            </a>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#">Sign in</a></li>
+            <li><a href="/">Login</a></li>
+            <li><a href="/cgpa">SGPA Calculator</a></li>
+            <div class="user-logo">
+                <img title="My Account" src="/static/media/user.png" alt="user">
+            </div>
+        </ul>
+    </nav>
+
+    
+
+    <div class="welcome-result">
+        <p class="text-center">Welcome, {{ name }}! Here is your...</p>
+        <h2 class="attendance-title">Attendance Analysis</h2>
+    </div>
+
+    <!-- Attendance Container -->
+    <div class="attendance-container">
+
+         <!-- Table -->
+
+        <div class="table-responsive">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Attendance Percentage</th>
+                        <th>Classes Attended</th>
+                        <th>Analysis</th>
+                        <th>Classes to Skip</th>
+                        <th>Classes to Attend</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in range(subjects|length) %}
+                    <tr>
+                        <td>{{ subjects[i] }}</td>
+                        <td>{{ attendance[i] }}%</td>
+                        <td>{{ attended[i] }}</td>
+                        <td>{{ analysis[i] }}</td>
+
+                        {% set bunk_classes = analysis[i] | regex_search('bunk (\d+)') %}
+                        {% set attend_classes = analysis[i] | regex_search('Attend at least (\d+)') %}
+
+                            <td>
+                                <div class="bunk-attend-flex">
+                                    <!-- Bunk Column -->
+                                    {% if bunk_classes and bunk_classes|int > 0 %}
+                                        <span class="bunk-box show-circle">{{ bunk_classes }}</span>
+                                    {% else %}
+                                        <span class="empty-placeholder">-</span>
+                                    {% endif %}
+                            </td>
+                                
+                                <td>
+                                    <div class="bunk-attend-flex">
+                                    <!-- Attend Column -->
+                                    {% if attend_classes and attend_classes|int > 0 %}
+                                        <span class="attend-box show-circle">{{ attend_classes }}</span>
+                                    {% else %}
+                                        <span class="empty-placeholder">-</span>
+                                    {% endif %}
+                                  </div>
+
+                                </td>
+            
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Overall Attendance Section -->
+<div class="overall-res">
+    <h2 class="result-text-center">Overall Attendance:</h2>
+    <h2 class="overall-attendance {% if overall > 85 %} green {% elif overall >= 70 %} yellow {% else %} red {% endif %}">
+        {{ overall }}%
+    </h2>
+
+    {% if overall > 75 %}
+        <h3 class="text-center">You may skip 
+            <span class="big-green">{{ classes }}</span> 
+            more classes and still be above 75%
+        </h3>
+    {% else %}
+        <h3 class="text-center">You must attend 
+            <span class="big-red">{{ classes }}</span> 
+            more classes to stay above 75%
+        </h3>
+    {% endif %}
+
+    <!-- Logout Button -->
+<div class="logout-btn">
+    <a href="/login" class="attendance-logout">Logout</a>
+</div>
+
+</div>
+
+    
+</div>
+
+<div class="mail-alert-section">
+    <h2>Stay Updated with Attendance Alerts!</h2>
+    <p>Receive email alerts about your attendance updates and never miss an important update. Stay on track effortlessly!</p>
+    <a href="/mail" class="mail-button">Subscribe Now</a>
+</div>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+
+        <p class="problem-stmt">
+            College students are often stressed about maintaining their attendance. Keeping track of the number of classes they need to attend or can afford to skip becomes a tedious manual task.
+        </p>
+
+        <p class="footer-description">
+            © 2025 <br>
+            <br>
+            This Attendance Management System helps students track their attendance percentage, 
+            analyze their attendance trends, and determine the number of classes they need to attend 
+            or can afford to skip while staying above the required threshold.
+        </p>
+
+        <div class="footer-links">
+            <p>
+                <strong>Contact:</strong> 
+                <a href="mailto:durvadeshpande@gmail.com">durvadeshpande@gmail.com</a> | 
+                <a href="https://github.com/durva7px" target="_blank">GitHub</a>
+            </p>
+            <p>
+                <strong>Contact:</strong> 
+                <a href="mailto:yadhnikawakde@gmail.com">yadhnikawakde@gmail.com</a> | 
+                <a href="https://github.com/SuzanTurner" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>
