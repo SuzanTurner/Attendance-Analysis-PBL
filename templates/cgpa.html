@@ -51,8 +51,6 @@
         }
     </style>
 </head>
-
-</html>
 <body>
     <div class="container">
         <h1>CGPA Calculator</h1>
@@ -69,5 +67,8 @@
         {% if required_sgpa is not none %}
             <h1>Required SGPA to achieve CGPA {{ desired_cgpa }}: {{ required_sgpa|round(2) }}</h1>
         {% endif %}
+
+        <a href="/" class="btn btn-secondary">Back</a>
     </div>
 </body>
+</html>

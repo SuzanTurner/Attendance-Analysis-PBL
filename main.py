@@ -22,8 +22,11 @@ def regex_search(value, pattern):
 # Register the filter in Jinja
 app.jinja_env.filters['regex_search'] = regex_search
 
+result_list = []
+
 # Web Scraping Function
 def get_attendance(username, password, threshold=60):
+    global result_list
     chromedriver_path = r"C:/Users/hp/Downloads/chromedriver-win64/chromedriver.exe"
     brave_path = r"C:/Program Files/BraveSoftware/Brave-Browser/Application/Brave.exe"
     
@@ -112,6 +115,14 @@ def get_attendance(username, password, threshold=60):
             except:
                 continue
 
+        for i in range(len(subjects)):
+            result_list.append(f"{subjects[i]} : {attended[i]}")
+            result_list.append(analysis[i])
+            result_list.append("")
+
+        result_list.append(f"Overall Attendance is: {overall}")
+        
+
         return subjects, attendance, attended, analysis, overall, classes, name
     except Exception as e:
         driver.quit()
@@ -158,6 +169,7 @@ EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 @app.route('/mail', methods=['GET', 'POST'])
 def mail():
+    global result_list
     if request.method == 'POST':
         user_email = request.form.get('email')  
 
@@ -167,7 +179,7 @@ def mail():
                 con.login(user = "silvervoid3.14@gmail.com", password = "volt mcsb tcqm jcan")
                 con.sendmail(from_addr = "silvervoid3.14@gmail.com", 
                             to_addrs = user_email, 
-                            msg="Subject: Test Email\n\nHi\n\nSent from Flask")
+                            msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
 
                 return "Mail Sent Successfully!"
             
