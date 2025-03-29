@@ -1,24 +1,16 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
-
-    <link rel="stylesheet" href="/static/style.css">
-
+    <title>Mail Sent</title>
+    <link rel="stylesheet" href="/static/form.css">
 </head>
-
 <body>
-
-    <!-- Navbar -->
 
     <nav class="navbar">
         <div class="left">
-            <a href="/" class="logo"> 
+            <a href="http://127.0.0.1:5000/login" class="logo"> 
                 <img src="/static/media/calendar.png" alt="Logo"> 
                 <ul>
                     <li class="project-name">Attendance Management System <br>with Class Recommendation
@@ -31,50 +23,16 @@
         <ul class="nav-links">
             <li><a href="/">Login</a></li>
             <li><a href="{{ url_for('cgpa') }}">SGPA Calculator</a></li>
+            
         </ul>
     </nav>
-
-    <div class="main-ctnr">
-
-        <div class="welcome-txt">
-            <p>Hey there! Welcome to...</p>
-        </div>
-        
-        <div class="typewriter-txt">
-            <h2 class="text-center">Smart Attendance Analyzer</h2>
-        </div>
-        
-    
-        <div class="container-mt-5">
-    
-            <div class="form-container">
-                <form action="/" method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required placeholder="ex. 22deshpandeda@rbunagpur.in">
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required placeholder="enter password">
-                        <!-- toggle -->
-                    <button type="button" class="toggle-btn" onclick="togglePassword()">
-                        <img src="/static/media/icons8-eye-30.png" alt="show/hide">
-                    </button>
-                    </div>
-    
-                    <div class="submit-btn-ctnr">
-                        <button type="submit" class="submit-button">Submit</button>
-                    </div>
-        
-                </form>
-            </div>
-    
-        </div>
-
+    <div class="sent-mail">
+        <p class="sent-mail1"> Mail send Successfully!! </p>
+    <p class="sent-mail2"> Check your inbox!! </p>
     </div>
+    
 
-<!-- Footer -->
+    <!-- Footer -->
 <footer class="footer">
     <div class="footer-content">
 
@@ -105,10 +63,5 @@
     </div>
 </footer>
     
-        
-
 </body>
-
-<script src="/static/script.js"></script>
-
 </html>

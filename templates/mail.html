@@ -10,7 +10,7 @@
 
     <nav class="navbar">
         <div class="left">
-            <a href="http://127.0.0.1:5000/login" class="logo"> 
+            <a href="/" class="logo"> 
                 <img src="/static/media/calendar.png" alt="Logo"> 
                 <ul>
                     <li class="project-name">Attendance Management System <br>with Class Recommendation
@@ -21,12 +21,8 @@
         </div>
 
         <ul class="nav-links">
-            <li><a href="#">Sign in</a></li>
             <li><a href="/">Login</a></li>
-            <li><a href="http://127.0.0.1:5000/sgpa">SGPA Calculator</a></li>
-            <div class="user-logo">
-                <img title="My Account" src="/static/media/user.png" alt="user" >
-            </div>
+            <li><a href="{{ url_for('cgpa') }}">SGPA Calculator</a></li>
             
         </ul>
     </nav>

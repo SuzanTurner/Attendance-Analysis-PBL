@@ -9,8 +9,30 @@
 
 </html>
 <body>
+     <!-- Navbar -->
+
+     <nav class="navbar">
+        <div class="left">
+            <a href="/" class="logo"> 
+                <img src="/static/media/calendar.png" alt="Logo"> 
+                <ul>
+                    <li class="project-name">Attendance Management System <br>with Class Recommendation
+                    </li>
+                </ul>
+            </a>
+           
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/">Login</a></li>
+            <li><a href="{{ url_for('cgpa') }}">SGPA Calculator</a></li>
+            
+        </ul>
+    </nav>
+
+
     <div class="container">
-        <h1>CGPA Calculator</h1>
+        <h1>SGPA Calculator</h1>
         <form method="POST" action="/cgpa">
             <label>Enter your Current CGPA</label>
             <input type="text" name="cgpa" placeholder="8.0" value="{{ cgpa if cgpa is not none else '' }}" required>
@@ -25,4 +47,37 @@
             <h1>Required SGPA to achieve CGPA {{ desired_cgpa }}: {{ required_sgpa|round(2) }}</h1>
         {% endif %}
     </div>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+
+        <p class="problem-stmt">
+            College students are often stressed about maintaining their attendance. Keeping track of the number of classes they need to attend or can afford to skip becomes a tedious manual task.
+        </p>
+
+        <p class="footer-description">
+            © 2025 <br>
+            <br>
+            This Attendance Management System helps students track their attendance percentage, 
+            analyze their attendance trends, and determine the number of classes they need to attend 
+            or can afford to skip while staying above the required threshold.
+        </p>
+
+        <div class="footer-links">
+            <p>
+                <strong>Contact:</strong> 
+                <a href="mailto:durvadeshpande@gmail.com">durvadeshpande@gmail.com</a> | 
+                <a href="https://github.com/durva7px" target="_blank">GitHub</a>
+            </p>
+            <p>
+                <strong>Contact:</strong> 
+                <a href="mailto:yadhnikawakde@gmail.com">yadhnikawakde@gmail.com</a> | 
+                <a href="https://github.com/SuzanTurner" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </div>
+</footer>
+    
 </body>

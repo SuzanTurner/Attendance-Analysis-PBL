@@ -72,7 +72,7 @@ form button:hover {
     text-align: left;
     margin-left: 20px;
     margin-top: 50px;
-    max-width: 400px;
+    max-width: 3cqmin;
 }
 
 /* Description Styling */
@@ -81,7 +81,7 @@ form button:hover {
     font-size: 14px;
     opacity: 0.8;
     text-align: center;
-    max-width: 600px;
+    max-width: 500px;
     font-family: monospace;
 }
 
@@ -93,7 +93,7 @@ form button:hover {
 
 .footer-links{
     text-align: right;
-    max-width: 400px;
+    max-width: 500px;
     margin-top: 50px;
     margin-right: 20px;
 }
@@ -232,4 +232,15 @@ body {
         flex-direction: column;
         gap: 10px;
     }
+}
+
+/* sent mail */
+
+.sent-mail{
+    margin-top: 200px;
+    color: white;
+    font-family: monospace;
+    text-align: center;
+    margin-bottom: 200px;
+    font-size: large;
 }

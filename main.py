@@ -102,7 +102,8 @@ def get_attendance(username, password, threshold=60):
                         a += 1
                         total += 1
                         extra_classes += 1
-                    analysis.append(f"{subjects[i]}: Attend at least {extra_classes} more classes to cross {threshold}%")
+                    #analysis.append(f"{subjects[i]}: Attend at least {extra_classes} more classes to cross {threshold}%")
+                    analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%")
                 else:
                     bunkable = 0
                     temp_a, temp_total = a, total
@@ -111,7 +112,11 @@ def get_attendance(username, password, threshold=60):
                         temp_total -= 1
                         bunkable += 1
                     bunkable -= 1  # The last decrement takes it below threshold
-                    analysis.append(f"{subjects[i]}: You can bunk {bunkable} classes and still stay above {threshold}%")
+                    #analysis.append(f"{subjects[i]}: You can bunk {bunkable} classes and still stay above {threshold}%")
+                    #analysis.append(f"You can bunk {bunkable} classes and still stay above {threshold}%")
+                    analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%".split(":")[-1])
+                    analysis.append(f"You can bunk {bunkable} classes and still stay above {threshold}%".split(":")[-1])
+
             except:
                 continue
 
@@ -181,7 +186,7 @@ def mail():
                             to_addrs = user_email, 
                             msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
 
-                return "Mail Sent Successfully!"
+                return render_template('mail_sent.html')
             
         except Exception as e:
             print("Error:", e)
