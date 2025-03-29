@@ -4,8 +4,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from email.message import EmailMessage
 import time
 import re
+import smtplib
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -107,11 +111,12 @@ def get_attendance(username, password, threshold=60):
                     analysis.append(f"{subjects[i]}: You can bunk {bunkable} classes and still stay above {threshold}%")
             except:
                 continue
-        
+
         return subjects, attendance, attended, analysis, overall, classes, name
     except Exception as e:
         driver.quit()
         return None
+
 
 # Flask Routes
 @app.route('/', methods=['GET', 'POST'])  
@@ -131,18 +136,46 @@ def login():
 @app.route('/cgpa', methods=['GET', 'POST'])
 def cgpa():
     cgpa_value = None
-    pred_cgpa = None
+    desired_cgpa = None
+    required_sgpa = None
 
     if request.method == 'POST':
-        if 'submit_cgpa' in request.form:
-            cgpa_value = float(request.form['cgpa'])
-        elif 'submit_sgpa' in request.form:
-            cgpa_value = float(request.form['cgpa'])  # Retrieve from hidden input
-            sgpa = float(request.form['sgpa'])
-            pred_cgpa = (cgpa_value + sgpa) / 2
+        cgpa_value = float(request.form['cgpa'])
+        desired_cgpa = float(request.form['desired_cgpa'])
 
-    return render_template('cgpa.html', cgpa=cgpa_value, pred_cgpa=pred_cgpa)
+        # Required SGPA Calculation
+        required_sgpa = 2 * desired_cgpa - cgpa_value  
+        if required_sgpa > 10:
+            required_sgpa = 10
 
+    return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa)
+
+
+load_dotenv()
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
+
+
+@app.route('/mail', methods=['GET', 'POST'])
+def mail():
+    if request.method == 'POST':
+        user_email = request.form.get('email')  
+
+        try: 
+            with smtplib.SMTP("smtp.gmail.com", 587) as con:
+                con.starttls()
+                con.login(user = "silvervoid3.14@gmail.com", password = "volt mcsb tcqm jcan")
+                con.sendmail(from_addr = "silvervoid3.14@gmail.com", 
+                            to_addrs = user_email, 
+                            msg="Subject: Test Email\n\nHi\n\nSent from Flask")
+
+                return "Mail Sent Successfully!"
+            
+        except Exception as e:
+            print("Error:", e)
+            return "Mail Sending Failed!"
+        
+    return render_template('mail.html')
 
 
 @app.route('/error')
@@ -150,4 +183,4 @@ def error():
     return render_template('error.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)  
+    app.run(debug=False)  

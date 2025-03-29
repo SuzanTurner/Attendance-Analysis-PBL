@@ -51,26 +51,23 @@
         }
     </style>
 </head>
+
+</html>
 <body>
     <div class="container">
-        <h1>Enter your CGPA till current sem</h1>
+        <h1>CGPA Calculator</h1>
         <form method="POST" action="/cgpa">
-            <input type="text" name="cgpa" placeholder="6.9" value="{{ cgpa if cgpa is not none else '' }}" required>
-            <button type="submit" name="submit_cgpa">Submit</button>
+            <label>Enter your Current CGPA</label>
+            <input type="text" name="cgpa" placeholder="8.0" value="{{ cgpa if cgpa is not none else '' }}" required>
+
+            <label>Enter your Desired CGPA</label>
+            <input type="text" name="desired_cgpa" placeholder="9.0" value="{{ desired_cgpa if desired_cgpa is not none else '' }}" required>
+
+            <button type="submit" name="submit">Calculate</button>
         </form>
 
-        {% if cgpa is not none %}
-            <h1>Enter your expected SGPA</h1>
-            <form method="POST" action="/cgpa">
-                <input type="hidden" name="cgpa" value="{{ cgpa }}">  
-                <input type="text" name="sgpa" placeholder="6.9" required>
-                <button type="submit" name="submit_sgpa">Submit</button>
-            </form>
-        {% endif %}
-
-        {% if pred_cgpa is not none %}
-            <div class="result">Predicted CGPA based on entered SGPA is: {{ pred_cgpa }}</div>
+        {% if required_sgpa is not none %}
+            <h1>Required SGPA to achieve CGPA {{ desired_cgpa }}: {{ required_sgpa|round(2) }}</h1>
         {% endif %}
     </div>
 </body>
-</html>
