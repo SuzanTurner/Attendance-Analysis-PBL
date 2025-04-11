@@ -4,7 +4,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from email.message import EmailMessage
 import time
 import re
 import smtplib
@@ -27,6 +26,7 @@ result_list = []
 # Web Scraping Function
 def get_attendance(username, password, threshold=60):
     global result_list
+    result_list = [] 
     chromedriver_path = r"C:/Users/hp/Downloads/chromedriver-win64/chromedriver.exe"
     brave_path = r"C:/Program Files/BraveSoftware/Brave-Browser/Application/Brave.exe"
     
@@ -38,6 +38,7 @@ def get_attendance(username, password, threshold=60):
     driver = webdriver.Chrome(service=service, options=options)
     
     driver.get("https://rbu.icloudems.com/corecampus/index.php")
+    print("Got into site")
     
     try:
         driver.find_element(By.XPATH, '//*[@id="useriid"]').send_keys(username, Keys.ENTER)
@@ -51,7 +52,6 @@ def get_attendance(username, password, threshold=60):
         
         driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[5]/div/div/div[2]/a/img').click()
         time.sleep(2)  
-
 
         name = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/h5').text
 
@@ -71,6 +71,8 @@ def get_attendance(username, password, threshold=60):
             classes = max(0, (attended_classes - 0.75 * total_classes) / 0.75)  
             #print(f"You can skip {int(classes)} classes and still be above 75%")
 
+        #print(overall)
+
         subjects = []
         attendance = []
         attended = []
@@ -80,6 +82,7 @@ def get_attendance(username, password, threshold=60):
         for idx in subject_indices:
             try:
                 subject = driver.find_element(By.XPATH, f'/html/body/div[1]/div/div[1]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr[{idx}]/td[2]').text
+                #print(subject)
                 percent = driver.find_element(By.XPATH, f'/html/body/div[1]/div/div[1]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr[{idx}]/td[6]').text
                 attend = driver.find_element(By.XPATH, f'/html/body/div[1]/div/div[1]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr[{idx}]/td[5]/div').text
                 subjects.append(subject)
@@ -102,8 +105,8 @@ def get_attendance(username, password, threshold=60):
                         a += 1
                         total += 1
                         extra_classes += 1
-                    #analysis.append(f"{subjects[i]}: Attend at least {extra_classes} more classes to cross {threshold}%")
-                    analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%")
+                    analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%".split(":")[-1])
+                    #analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%")
                 else:
                     bunkable = 0
                     temp_a, temp_total = a, total
@@ -112,13 +115,16 @@ def get_attendance(username, password, threshold=60):
                         temp_total -= 1
                         bunkable += 1
                     bunkable -= 1  # The last decrement takes it below threshold
+
                     #analysis.append(f"{subjects[i]}: You can bunk {bunkable} classes and still stay above {threshold}%")
                     #analysis.append(f"You can bunk {bunkable} classes and still stay above {threshold}%")
-                    analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%".split(":")[-1])
                     analysis.append(f"You can bunk {bunkable} classes and still stay above {threshold}%".split(":")[-1])
 
-            except:
+            except Exception as e:
+                print(f"Error while extracting data: {e}")
                 continue
+
+        print("Data Scraped")
 
         for i in range(len(subjects)):
             result_list.append(f"{subjects[i]} : {attended[i]}")
@@ -127,8 +133,9 @@ def get_attendance(username, password, threshold=60):
 
         result_list.append(f"Overall Attendance is: {overall}")
         
-
+        #print(subjects, attendance, attended, analysis, overall, classes, name)
         return subjects, attendance, attended, analysis, overall, classes, name
+    
     except Exception as e:
         driver.quit()
         return None
