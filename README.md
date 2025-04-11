@@ -17,7 +17,7 @@ A fully automated system that scrapes attendance data from the college website a
 
 1️⃣ Clone the Repository
 
-git clone https://github.com/SuzanTurner/Attendance-Analysis-PBL/tree/main.git
+git clone https://github.com/SuzanTurner/Attendance-Analysis-PBL/tree/master.git
 
 
 2️⃣ Install Dependencies
