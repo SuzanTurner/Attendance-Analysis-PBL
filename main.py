@@ -67,13 +67,12 @@ def get_attendance(username, password, threshold=60):
             required_percentage = 75
 
             if overall < required_percentage:
-                classes = int(max(0, (0.75 * total_classes - attended_classes) / 0.25) - attended_classes)
-                #print(f"Attend at least {attended_classes - (int(classes) + 1)} more classes to reach 75%")
+                classes = (attended_classes - 0.75 * total_classes) / -0.25
+                classes = int(max(0, classes))  # Ensure it's not negative
+                print(f"Attend at least {int(classes)} more classes to reach 75%")
             else:
-                classes = max(0, (attended_classes - 0.75 * total_classes) / 0.75)  
-                #print(f"You can skip {int(classes)} classes and still be above 75%")
-
-            #print(overall)
+                classes = int((attended_classes - 0.75 * total_classes) / 0.75)
+                print(f"You can skip {int(classes)} classes and still be above 75%")
 
             subjects = []
             attendance = []
@@ -179,22 +178,29 @@ def get_attendance(username, password, threshold=60):
 
             classes = 0
 
-            if overall < required_percentage:
+            st = '''if overall < required_percentage:
                 print("got here")
                 classes = int(max(0, (0.75 * total_classes - attended_classes) / 0.25) - attended_classes)
                 print(f"Attend at least {attended_classes - (int(classes) + 1)} more classes to reach 75%")
             else:
                 classes = max(0, (attended_classes - 0.75 * total_classes) / 0.75)  
                 print(f"You can skip {int(classes)} classes and still be above 75%")
+                '''
 
-            #print(overall)
-
+            if overall < required_percentage:
+                classes = (attended_classes - 0.75 * total_classes) / -0.25
+                classes = int(max(0, classes))  # Ensure it's not negative
+                print(f"Attend at least {int(classes)} more classes to reach 75%")
+            else:
+                classes = int((attended_classes - 0.75 * total_classes) / 0.75)
+                print(f"You can skip {int(classes)} classes and still be above 75%")
+    
 
             subjects = []
             attendance = []
             attended = []
             
-            subject_indices = [1,2,3,4,5]
+            subject_indices = [1,2,3,4,5,9,10]
             
             for idx in subject_indices:
                 #print(idx)
@@ -227,12 +233,11 @@ def get_attendance(username, password, threshold=60):
                         #analysis.append(f"Attend at least {extra_classes} more classes to cross {threshold}%")
                     else:
                         bunkable = 0
-                        temp_a, temp_total = a, total
-                        while ((temp_a / temp_total) * 100) >= threshold:
-                            temp_a -= 1
-                            temp_total -= 1
+                        temp_total = total
+                        while (a / temp_total) * 100 >= threshold:
+                            temp_total += 1
                             bunkable += 1
-                        bunkable -= 1  # The last decrement takes it below threshold
+                        bunkable -= 1
 
                         #analysis.append(f"{subjects[i]}: You can bunk {bunkable} classes and still stay above {threshold}%")
                         #analysis.append(f"You can bunk {bunkable} classes and still stay above {threshold}%")
