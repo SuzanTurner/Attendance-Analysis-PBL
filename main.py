@@ -27,7 +27,7 @@ result_list = []
 def get_attendance(username, password, threshold=60):
     global result_list
     result_list = [] 
-    chromedriver_path = r"C:/Users/hp/Downloads/chromedriver-win64/chromedriver.exe"
+    chromedriver_path = r"C:/Users/hp/Downloads/chromedriver-win64 (2)/chromedriver-win64/chromedriver.exe"
     brave_path = r"C:/Program Files/BraveSoftware/Brave-Browser/Application/Brave.exe"
     
     options = Options()
@@ -298,7 +298,7 @@ def cgpa():
     return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa)
 
 
-load_dotenv()
+load_dotenv('secrets.env')
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 
@@ -308,11 +308,12 @@ def mail():
     global result_list
     if request.method == 'POST':
         user_email = request.form.get('email')  
-
+        print(user_email)
         try: 
             with smtplib.SMTP("smtp.gmail.com", 587) as con:
                 con.starttls()
-                con.login(user = "silvervoid3.14@gmail.com", password = "volt mcsb tcqm jcan")
+                print("started tls")
+                con.login(user = "silvervoid3.14@gmail.com", password = "volt mcsb tcqm jcan" )
                 con.sendmail(from_addr = "silvervoid3.14@gmail.com", 
                             to_addrs = user_email, 
                             msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
@@ -331,4 +332,4 @@ def error():
     return render_template('error.html')
 
 if __name__ == '__main__':
-    app.run(debug=False)  
+    app.run(debug=True)  
