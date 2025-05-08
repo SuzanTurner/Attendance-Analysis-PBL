@@ -298,7 +298,7 @@ def cgpa():
     return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa)
 
 
-load_dotenv('secrets.env')
+load_dotenv()
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 
@@ -313,8 +313,8 @@ def mail():
             with smtplib.SMTP("smtp.gmail.com", 587) as con:
                 con.starttls()
                 print("started tls")
-                con.login(user = "silvervoid3.14@gmail.com", password = "volt mcsb tcqm jcan" )
-                con.sendmail(from_addr = "silvervoid3.14@gmail.com", 
+                con.login(user = EMAIL_USER, password = EMAIL_PASS )
+                con.sendmail(from_addr = EMAIL_USER, 
                             to_addrs = user_email, 
                             msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
 
