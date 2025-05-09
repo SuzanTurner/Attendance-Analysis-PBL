@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 
 
-# Custom Jinja Filter for Regex Search
 def regex_search(value, pattern):
     match = re.search(pattern, value)
     return match.group(1) if match else None
@@ -282,21 +281,6 @@ def login():
 
 @app.route('/cgpa', methods=['GET', 'POST'])
 def cgpa():
-    s = '''
-    cgpa_value = None
-    desired_cgpa = None
-    required_sgpa = None
-
-    if request.method == 'POST':
-        cgpa_value = float(request.form['cgpa'])
-        desired_cgpa = float(request.form['desired_cgpa'])
-
-        # Required SGPA Calculation
-        required_sgpa = 2 * desired_cgpa - cgpa_value  
-        if required_sgpa > 10:
-            required_sgpa = 10
-
-    return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa) '''
     grade_point_map = {
         "AA": 10,
         "AB": 9,
@@ -319,7 +303,7 @@ def cgpa():
             credit_key = f"{subject}_credit"
 
             grade = request.form.get(grade_key, "FF")
-            credit = float(request.form.get(credit_key, 0))
+            credit = int(request.form.get(credit_key, 0))
 
             point = get_grade_point(grade)
             grades_and_credits.append((point, credit))
@@ -330,11 +314,12 @@ def cgpa():
         sgpa = total_weighted_score / total_credits if total_credits != 0 else 0
         sgpa = round(sgpa, 2)
 
-        previous_cgpa = float(request.form.get('cgpa', 0))
-        final_cgpa = round((previous_cgpa + sgpa) / 2, 2)
+        cgpa = float(request.form.get('cgpa', 0))
+        final_cgpa = round((cgpa + sgpa) / 2, 2)
 
-        return render_template('cgpa.html', sgpa=sgpa, cgpa=previous_cgpa, final_cgpa=final_cgpa)
-    return render_template('cgpa.html') 
+        return render_template('cgpa.html', sgpa=sgpa, final_cgpa=final_cgpa)
+    
+    return render_template('cgpa.html')
 
 load_dotenv()
 EMAIL_USER = os.getenv("EMAIL_USER")
@@ -351,7 +336,7 @@ def mail():
             with smtplib.SMTP("smtp.gmail.com", 587) as con:
                 con.starttls()
                 print("started tls")
-                con.login(user = EMAIL_USER, password = EMAIL_PASS )
+                con.login(from_addr = EMAIL_USER, password = EMAIL_PASS )
                 con.sendmail(from_addr = EMAIL_USER, 
                             to_addrs = user_email, 
                             msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
