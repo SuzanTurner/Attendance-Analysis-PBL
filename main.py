@@ -178,7 +178,7 @@ def get_attendance(username, password, threshold=60):
 
             classes = 0
 
-            st = '''if overall < required_percentage:
+            s = '''if overall < required_percentage:
                 print("got here")
                 classes = int(max(0, (0.75 * total_classes - attended_classes) / 0.25) - attended_classes)
                 print(f"Attend at least {attended_classes - (int(classes) + 1)} more classes to reach 75%")
@@ -282,6 +282,7 @@ def login():
 
 @app.route('/cgpa', methods=['GET', 'POST'])
 def cgpa():
+    s = '''
     cgpa_value = None
     desired_cgpa = None
     required_sgpa = None
@@ -295,8 +296,45 @@ def cgpa():
         if required_sgpa > 10:
             required_sgpa = 10
 
-    return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa)
+    return render_template('cgpa.html', cgpa=cgpa_value, desired_cgpa=desired_cgpa, required_sgpa=required_sgpa) '''
+    grade_point_map = {
+        "AA": 10,
+        "AB": 9,
+        "BB": 8,
+        "BC": 7,
+        "CC": 6,
+        "CD": 5,
+        "FF": 0
+    }
 
+    if request.method == 'POST':
+        def get_grade_point(grade_str):
+            return grade_point_map.get(grade_str.upper(), 0)
+
+        subjects = ["DL", "DL_lab", "SE", "SE_lab", "CV", "CV_lab", "DAA", "PBL", "MOOC"]
+        grades_and_credits = []
+
+        for subject in subjects:
+            grade_key = f"{subject}_grade"
+            credit_key = f"{subject}_credit"
+
+            grade = request.form.get(grade_key, "FF")
+            credit = float(request.form.get(credit_key, 0))
+
+            point = get_grade_point(grade)
+            grades_and_credits.append((point, credit))
+
+        total_weighted_score = sum(point * credit for point, credit in grades_and_credits)
+        total_credits = sum(credit for _, credit in grades_and_credits)
+
+        sgpa = total_weighted_score / total_credits if total_credits != 0 else 0
+        sgpa = round(sgpa, 2)
+
+        previous_cgpa = float(request.form.get('cgpa', 0))
+        final_cgpa = round((previous_cgpa + sgpa) / 2, 2)
+
+        return render_template('cgpa.html', sgpa=sgpa, cgpa=previous_cgpa, final_cgpa=final_cgpa)
+    return render_template('cgpa.html') 
 
 load_dotenv()
 EMAIL_USER = os.getenv("EMAIL_USER")
