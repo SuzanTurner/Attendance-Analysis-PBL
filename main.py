@@ -6,12 +6,28 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 import re
+from datetime import datetime
 import smtplib
 import os
 from dotenv import load_dotenv
+from flask_apscheduler import APScheduler
+import json 
 
 app = Flask(__name__)
 
+load_dotenv()
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
+CHROMEDRIVER_PATH = os.getenv("CHROMEDRIVER_PATH")
+BRAVE_PATH = os.getenv("BRAVE_PATH")
+
+class Config:
+    SCHEDULER_API_ENABLED = True
+
+app.config.from_object(Config())
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 def regex_search(value, pattern):
     match = re.search(pattern, value)
@@ -26,8 +42,8 @@ result_list = []
 def get_attendance(username, password, threshold=60):
     global result_list
     result_list = [] 
-    chromedriver_path = r"C:/Users/hp/Downloads/chromedriver-win64 (2)/chromedriver-win64/chromedriver.exe"
-    brave_path = r"C:/Program Files/BraveSoftware/Brave-Browser/Application/Brave.exe"
+    chromedriver_path = CHROMEDRIVER_PATH
+    brave_path = BRAVE_PATH
     
     options = Options()
     options.add_argument("--headless")
@@ -263,8 +279,6 @@ def get_attendance(username, password, threshold=60):
             driver.quit()
             return None
 
-
-# Flask Routes
 @app.route('/', methods=['GET', 'POST'])  
 def login():
     if request.method == 'POST':
@@ -321,31 +335,102 @@ def cgpa():
     
     return render_template('cgpa.html')
 
-load_dotenv()
-EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASS")
+@scheduler.task('cron', id='weekly_mail', hour=9, minute=0)
+def send_scheduled_mails():
+    global result_list
+    now = datetime.now()
+    today = now.strftime("%A")
+    print(f"Running mail scheduler on {today}")
 
+    try:
+        with open('subscriptions.json', 'r') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        print("No subscriptions yet.")
+        return
+
+    for email, scheduled_day in data.items():
+        if scheduled_day == today:
+            try:
+                # First try with TLS
+                with smtplib.SMTP("smtp.gmail.com", 587) as con:
+                    con.starttls()
+                    con.login(EMAIL_USER, EMAIL_PASS)
+                    con.sendmail(
+                        from_addr=EMAIL_USER,
+                        to_addrs=email,
+                        msg=f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list)
+                    )
+                    print(f"Mail sent to {email} using TLS")
+            except Exception as e:
+                print(f"TLS failed for {email}: {e}")
+                try:
+                    # Fallback to SSL
+                    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as con:
+                        con.login(EMAIL_USER, EMAIL_PASS)
+                        con.sendmail(
+                            from_addr=EMAIL_USER,
+                            to_addrs=email,
+                            msg=f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list)
+                        )
+                        print(f"Mail sent to {email} using SSL")
+                except Exception as e:
+                    print(f"SSL also failed for {email}: {e}")
 
 @app.route('/mail', methods=['GET', 'POST'])
 def mail():
     global result_list
+    now = datetime.now()
+    day = now.strftime("%A")
+    print(day)
+    
     if request.method == 'POST':
         user_email = request.form.get('email')  
         print(user_email)
-        try: 
+        if not user_email or '@' not in user_email:
+            return render_template('error.html', message="Invalid email entered.")
+
+        # Save subscription
+        try:
+            with open('subscriptions.json', 'r') as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            data = {}
+
+        data[user_email] = day
+
+        with open('subscriptions.json', 'w') as f:
+            json.dump(data, f)
+
+        # Send immediate mail
+        try:
+            # First try with TLS
             with smtplib.SMTP("smtp.gmail.com", 587) as con:
                 con.starttls()
-                print("started tls")
-                con.login(from_addr = EMAIL_USER, password = EMAIL_PASS )
-                con.sendmail(from_addr = EMAIL_USER, 
-                            to_addrs = user_email, 
-                            msg = f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list))
-
+                con.login(EMAIL_USER, EMAIL_PASS)
+                con.sendmail(
+                    from_addr=EMAIL_USER,
+                    to_addrs=user_email,
+                    msg=f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list)
+                )
+                print(f"Immediate mail sent to {user_email} using TLS")
                 return render_template('mail_sent.html')
-            
         except Exception as e:
-            print("Error:", e)
-            return "Mail Sending Failed!"
+            print(f"TLS failed for immediate mail to {user_email}: {e}")
+            try:
+                # Fallback to SSL
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as con:
+                    con.login(EMAIL_USER, EMAIL_PASS)
+                    con.sendmail(
+                        from_addr=EMAIL_USER,
+                        to_addrs=user_email,
+                        msg=f"Subject: Attendance Report\n\nHere is your attendance summary:\n\n" + "\n".join(result_list)
+                    )
+                    print(f"Immediate mail sent to {user_email} using SSL")
+                    return render_template('mail_sent.html')
+            except Exception as e:
+                print(f"SSL also failed for immediate mail to {user_email}: {e}")
+                return render_template('error.html', message="Failed to send email. Please try again later.")
         
     return render_template('mail.html')
 
