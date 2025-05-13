@@ -4,6 +4,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import re
 from datetime import datetime
@@ -46,7 +48,7 @@ def get_attendance(username, password, threshold=60):
     brave_path = BRAVE_PATH
     
     options = Options()
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.binary_location = brave_path
     service = Service(chromedriver_path)
@@ -153,6 +155,7 @@ def get_attendance(username, password, threshold=60):
             return subjects, attendance, attended, analysis, overall, classes, name
         
         except Exception as e:
+            print("Fatal error:", e)
             driver.quit()
             return None
     else:
@@ -161,11 +164,19 @@ def get_attendance(username, password, threshold=60):
         print("Got into site")
         
         try:
-            driver.find_element(By.XPATH, '//*[@id="j_username"]').send_keys(username, Keys.ENTER)
-            driver.find_element(By.XPATH, '//*[@id="password-1"]').send_keys(password, Keys.ENTER)
-            time.sleep(2)  
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="j_username"]')))
 
-            #print("logged in")
+            username_field = driver.find_element(By.XPATH, '//*[@id="j_username"]')
+            username_field.send_keys(username)
+
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password-1"]')))
+
+            password_field = driver.find_element(By.XPATH, '//*[@id="password-1"]')
+            password_field.send_keys(password, Keys.ENTER)
+
+            time.sleep(2) 
+
+            print("logged in")
         
             # Check if login failed
             if "Invalid username/password" in driver.page_source:
@@ -276,6 +287,7 @@ def get_attendance(username, password, threshold=60):
 
         
         except Exception as e:
+            print("Fatal error:", e)
             driver.quit()
             return None
 
