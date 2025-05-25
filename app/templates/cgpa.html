@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGPA Calculator</title>
+    <link rel="stylesheet" href="/static/sgpa.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="left">
+            <a href="/" class="logo">
+                <img src="/static/media/calendar.png" alt="Logo">
+                <ul>
+                    <li class="project-name">Attendance Management System <br>with Class Recommendation</li>
+                </ul>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Login</a></li>
+            <li><a href="/cgpa/">SGPA Calculator</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>SGPA Calculator</h1>
+        <form method="POST" action="/cgpa/">
+            <h2 style="color: antiquewhite;">Enter Grades and Credits:</h2>
+
+             <!-- { # % set subjects = ["DL", "DL_lab", "SE", "SE_lab", "CV", "CV_lab", "DAA", "PBL", "MOOC"] %} -->
+            {% for subject in subjects %}
+                <div class="subject-input">
+                    <label>{{ subject }} Grade:</label>
+                    <select name="{{ subject }}_grade" required>
+                        <option value="">Select Grade</option>
+                        <option value="AA">AA</option>
+                        <option value="AB">AB</option>
+                        <option value="BB">BB</option>
+                        <option value="BC">BC</option>
+                        <option value="CC">CC</option>
+                        <option value="CD">CD</option>
+                        <option value="FF">FF</option>
+                    </select>
+
+                    <label>{{ subject }} Credits:</label>
+                    <select name="{{ subject }}_credit" required>
+                        <option value="">Select Credits</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            {% endfor %}
+
+            <label>Enter your Current CGPA:</label>
+            <input type="number" name="cgpa" min="0" max="10" step="0.01" placeholder="8.0" required>
+
+            <button type="submit" name="submit">Calculate SGPA</button>
+        </form>
+
+        {% if sgpa is defined and sgpa is not none %}
+            <div class="result">
+                <h2>Your SGPA: {{ sgpa|floatformat:2 }}</h2>
+            </div>
+        {% endif %}
+
+        {% if final_cgpa is defined and final_cgpa is not none %}
+            <div class="result">
+                <h2>Final CGPA: {{ final_cgpa|floatformat:2 }}</h2>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="problem-stmt">
+                College students are often stressed about maintaining their attendance. Keeping track of the number of classes they need to attend or can afford to skip becomes a tedious manual task.
+            </p>
+            <p class="footer-description">
+                © 2025 <br><br>
+                This Attendance Management System helps students track their attendance percentage, analyze trends, and determine how many classes to attend or skip while staying above the threshold.
+            </p>
+            <div class="footer-links">
+                <p><strong>Contact:</strong> <a href="mailto:durvadeshpande@gmail.com">durvadeshpande@gmail.com</a> | <a href="https://github.com/durva7px" target="_blank">GitHub</a></p>
+                <p><strong>Contact:</strong> <a href="mailto:yadhnikawakde@gmail.com">yadhnikawakde@gmail.com</a> | <a href="https://github.com/SuzanTurner" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
