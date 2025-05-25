@@ -1,0 +1,246 @@
+form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 30px;
+    max-width: 600px;
+    height: 200px;
+    margin: 100px auto; /* Centering with margin */
+    margin-top: 200px;
+    margin-bottom: 100px;
+    text-align: center;
+    justify-items: center;
+    justify-self: center;
+}
+
+form label {
+    margin-top: 30px;
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+form input {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+form button {
+    background: linear-gradient(135deg, #ff4e50, #ff847c); /* Red Gradient */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+form button:hover {
+    background: linear-gradient(135deg, #ff847c, #ff4e50);
+}
+
+/* other */
+
+/* Footer Styling */
+.footer {
+    background: linear-gradient(135deg, #1e1e1e, #2e445b); /* Dark gradient background */
+    color: white;
+    padding: 10px;
+    padding-bottom: 20px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+/* Footer Content */
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    opacity: 0.7;
+}
+
+.problem-stmt{
+    font-style: italic;
+    font-family: monospace;
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 50px;
+    max-width: 3cqmin;
+}
+
+/* Description Styling */
+.footer-description {
+    margin-bottom: 10px;
+    font-size: 14px;
+    opacity: 0.8;
+    text-align: center;
+    max-width: 500px;
+    font-family: monospace;
+}
+
+/* Year Styling */
+.footer-year {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.footer-links{
+    text-align: right;
+    max-width: 500px;
+    margin-top: 50px;
+    margin-right: 20px;
+}
+
+/* Footer Links */
+.footer-links p {
+    margin: 5px 0;
+    font-family: monospace;
+}
+
+/* Anchor Links */
+.footer-links a {
+    color: #edefff99; /* Light blue color */
+    text-decoration: none;
+    font-weight: bold;
+    font-family: monospace;
+    transition: color 0.3s ease-in-out;
+}
+
+.footer-links a:hover {
+    color: #ff9800; /* Orange on hover */
+    text-decoration: underline;
+}
+
+body {
+    background-attachment: fixed;
+    background-image: url('media/background.jpg'); /* Path to your image */
+    background-size: cover; /* Cover full screen */
+    background-position: center; /* Center image */
+    background-repeat: no-repeat; /* No repeating */
+    height: 100vh; /* Full viewport height */
+
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    /* background-color: #0b0b0b;  */
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Navbar Styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: auto;
+    /* z-index: 1000; */
+
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    background-color: none; 
+    /* padding-top: 15px;
+    padding-left: 25px; */
+    margin-bottom: 30px;
+
+    padding-top: 10px;
+    padding-top: 3px;
+    background: none; /* Semi-transparent black */
+    backdrop-filter: blur(20px); /* Adds a blur effect */
+}
+
+.logo{
+    display: flex;
+}
+
+
+/* Logo Styling */
+.left img{
+    height: 40px;
+    width: 40px;
+    margin: 15px;
+    margin-top: 25px;
+    margin-left: 20px;
+}
+
+.nav-links img{
+    height: 40px;
+    width: 40px;
+    margin-top: 0px;
+    margin-right: 20px;
+}
+
+.left a{
+    text-decoration: none;
+}
+
+.project-name{
+    text-decoration: none;
+    list-style: none;
+    color: white;
+    text-align: left;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-left: -37px;
+    margin-top: 7px;
+}
+
+
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s ease;
+    /* padding-top: 10px; */
+}
+
+.nav-links li{
+    margin-top: 10px;
+    margin-right: 30px;
+}
+
+.nav-links a:hover {
+    color: rgb(255, 153, 0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo img {
+        height: 40px; /* Smaller size for mobile */
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* sent mail */
+
+.sent-mail{
+    margin-top: 200px;
+    color: white;
+    font-family: monospace;
+    text-align: center;
+    margin-bottom: 200px;
+    font-size: large;
+}
